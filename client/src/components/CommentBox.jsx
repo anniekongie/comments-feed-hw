@@ -6,7 +6,6 @@ import { formatDtStringWithDate, formatDtStringWithDayOfWeek, isInCurrentWeek } 
 
 const CommentBox = (props) => {
     const { name, message, created } = props;
-
     const formattedDt = isInCurrentWeek(created) ? formatDtStringWithDayOfWeek(created) : formatDtStringWithDate(created);
     return (
         <Box sx={{ 
@@ -14,7 +13,7 @@ const CommentBox = (props) => {
             borderRadius: 1,
             width: 400,
         }}>
-            <Box sx={{margin: 1}} >{message}</Box>
+            <Box sx={{margin: 1}} > {message ? message.split('\n').map((substr, index) => <Typography key={index}>{substr.length > 0 ? substr : <br></br>}</Typography>) : ''}</Box>
             <Box sx={{mt: 2, mb: 1, mx: 1}}>
                 <Typography variant='caption'>{`${name} on ${formattedDt}`}</Typography>
             </Box>
