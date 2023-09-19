@@ -7,23 +7,37 @@ import { useEffect, useState } from 'react';
 
 
 export const CommentsPage = () => {
-    const [ comments, setComments ] = useState([{name: "Fake Author", message: "Message 1", created: "2023-08-19 15:15:00"}, {name: "Fake Author 2", message: "Message 2", created: "2023-07-4 1:09:00"}]);
+    const mockComments = [{name: "Fake Author", message: "Message 1", created: "2023-08-19 15:15:00"}, {name: "Fake Author 2", message: "Message 2", created: "2023-07-4 1:09:00"}];
+    const [ comments, setComments ] = useState(mockComments);
     const [ formValues, setFormValues ] = useState({ name: '', message: ''});
+
+    const [nameError, setNameError] = useState(false);
+    const [msgError, setMsgError] = useState(false);
 
     useEffect(() => {
         fetch(`/getComments`)
       .then((res) => res.json())
-      .then((data) => { if (data.length) {setComments([...comments, ...data])}});
+      .then((data) => { if (data.length) {setComments([...mockComments, ...data])}});
     }, []);
     
-    const handleSubmit = async () => {
-        await fetch('/createComment', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formValues),
-          });
+    
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        
+        let error = false;
+        if (!formValues.name) {setNameError(true); error = true;}
+
+        if (!formValues.message) {setMsgError(true); error = true;}
+        if (!error) {
+            await fetch('/createComment', {
+                method: 'POST',
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formValues),
+              });
+            location.reload();
+        }
     };
 
     return (
@@ -38,21 +52,24 @@ export const CommentsPage = () => {
                         <TextField size='small' sx={{ width: 400}} 
                             name='name'
                             type='text'
-                            onChange={(e) => setFormValues({...formValues, name: e.target.value})}
+                            error={nameError}
+                            helperText={nameError ? 'Required' : ''}
+                            onChange={(e) => {setNameError(false); setFormValues({...formValues, name: e.target.value})}}
                         />
                         <Box sx={{marginTop: 1}}> 
                             <TextField multiline sx={{ width: 400}} 
                                 name='message'
                                 type='text'
-                                onChange={(e) => setFormValues({...formValues, message: e.target.value})}
+                                error={msgError}
+                                helperText={msgError ? 'Required' : ''}
+                                onChange={(e) => {setMsgError(false); setFormValues({...formValues, message: e.target.value})}}
                             />
                         </Box>
                         <Box sx={{ marginTop: 1 }}>
-                            <Button variant='contained' type='submit'>Submit</Button>
+                            <Button variant='contained' type='submit' disabled={nameError || msgError}>Submit</Button>
                         </Box> 
                         </Box>
                     </form>
-                
             </Grid>
             <Grid container item direction="column" justifyContent='center' alignContent='center' sx={{
                 my: 3
