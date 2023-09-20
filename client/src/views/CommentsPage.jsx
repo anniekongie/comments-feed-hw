@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 
 export const CommentsPage = () => {
-    const mockComments = [{name: "Fake Author", message: "Message 1", created: "2023-08-19 15:15:00"}, {name: "Fake Author 2", message: "Message 2", created: "2023-07-4 1:09:00"}];
+    const mockComments = [{id: 999, name: "Fake Author", message: "Message 1", created: "2023-08-19 15:15:00"}, {id: 998, name: "Fake Author 2", message: "Message 2", created: "2023-07-4 1:09:00"}];
     const [ comments, setComments ] = useState(mockComments);
     const [ formValues, setFormValues ] = useState({ name: '', message: ''});
     const [nameError, setNameError] = useState(false);
@@ -45,7 +45,6 @@ export const CommentsPage = () => {
           });
         location.reload();
     };
-
 
     return (
         <Grid container direction='column' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
@@ -85,10 +84,9 @@ export const CommentsPage = () => {
             <Divider/>
             <Box sx={{ maxHeight: 350, overflowY: 'scroll', border: '1px solid', borderRadius: 1, padding: 2}}> 
                 {comments.map((comment) => 
-                <Box item key={`${comment.id}`} sx={{ marginTop: 2 }}> <CommentBox name={comment.name} message={comment.message} created={comment.created}/></Box>
+                <Box key={`${comment.id}`} sx={{ marginTop: 2 }}> <CommentBox name={comment.name} message={comment.message} created={comment.created}/></Box>
                 )} 
             </Box>
-
             <Grid item><Box sx={{ display: 'flex', justifyContent: 'right', my: 1}}><Button onClick={handleDelete} size='small' variant='outlined'>Delete all comments</Button></Box></Grid>
             </Grid>
         </Grid> 
