@@ -2,6 +2,7 @@
 /coverage
 /build
 
+.vscode/
 database.sqlite3
 
 .DS_Store
